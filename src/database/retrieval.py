@@ -19,12 +19,17 @@ try:
 except ImportError:
     HAS_BM25 = False
 
-try:
-    from sentence_transformers import SentenceTransformer, CrossEncoder
-    import faiss
-    HAS_ST = True
-except ImportError:
+# Avoid loading memory-heavy PyTorch/SentenceTransformers on Render Free tier
+if os.environ.get("RENDER") == "true":
     HAS_ST = False
+    app_logger.info("Render environment detected. Disabling PyTorch/SentenceTransformers to save memory.")
+else:
+    try:
+        from sentence_transformers import SentenceTransformer, CrossEncoder
+        import faiss
+        HAS_ST = True
+    except ImportError:
+        HAS_ST = False
 
 from src.models.schemas import CatalogItem, ConstraintState
 from src.utils.logger import app_logger
