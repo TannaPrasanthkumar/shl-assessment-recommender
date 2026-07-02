@@ -215,17 +215,8 @@ class CrossEncoderRanker:
     def __init__(self, model_name: str = "cross-encoder/ms-marco-MiniLM-L-6-v2") -> None:
         self.model_name = model_name
         self.model: Optional[Any] = None
-        self._offline_mode = False
-
-        if HAS_ST:
-            try:
-                self.model = CrossEncoder(self.model_name)
-                app_logger.info(f"Loaded Cross-Encoder: {self.model_name}")
-            except Exception as e:
-                app_logger.warning(f"Could not load Cross-Encoder ({e}). Running in offline mode.")
-                self._offline_mode = True
-        else:
-            self._offline_mode = True
+        self._offline_mode = True  # Disabled to prevent OOM memory issues on free-tier Render instances
+        app_logger.info("Cross-Encoder disabled to optimize memory footprint.")
 
     def rerank(self, query: str, candidates: List[CatalogItem]) -> List[Tuple[CatalogItem, float]]:
         """
