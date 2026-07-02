@@ -12,6 +12,8 @@ from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Tuple, Optional
 import numpy as np
 
+from src.utils.logger import app_logger
+
 # Try importing ML libraries, providing offline fallbacks if they are missing
 try:
     from rank_bm25 import BM25Okapi
@@ -32,7 +34,6 @@ else:
         HAS_ST = False
 
 from src.models.schemas import CatalogItem, ConstraintState
-from src.utils.logger import app_logger
 
 # Simple regex-based tokenization helper for fallback / lexical parsing
 def simple_tokenize(text: str) -> List[str]:
